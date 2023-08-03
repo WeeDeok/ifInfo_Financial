@@ -1,10 +1,11 @@
 from flask import Flask, send_file, render_template, make_response
 from io import BytesIO
 
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-plt.switch_backend('TkAgg')
+#plt.switch_backend('TkAgg')
 from functools import wraps, update_wrapper
 from datetime import datetime
 from IPython.display import HTML
@@ -12,9 +13,9 @@ from IPython.display import HTML
 
 app = Flask(__name__)
 
-df = pd.read_excel("sample.xlsx")
+prjRoot = os.getcwd()
+df = pd.read_excel(prjRoot + "/sample.xlsx")
 plt.rc('font', family='Malgun Gothic')
-
 
 # 캐시제거
 def nocache(view):
@@ -85,7 +86,7 @@ def get_total_image():
     plt.legend()
     
     img = BytesIO()
-    plt.savefig('static/img/total_1.png', format='png', dpi=200)
+    plt.savefig(prjRoot + '/static/img/total_1.png', format='png', dpi=200)
     img.seek(0)
 
     
@@ -104,7 +105,7 @@ def get_country_image():
     plt.xticks(rotation=45)
     
     img = BytesIO()
-    plt.savefig('static/img/country_1.png', format='png', dpi=200)
+    plt.savefig(prjRoot + '/static/img/country_1.png', format='png', dpi=200)
     img.seek(0)
     
     return send_file(img, mimetype='image/png')
@@ -144,7 +145,7 @@ def get_sales_profit_image():
     plt.xticks(x, data_sales_profit.index)
 
     img = BytesIO()
-    plt.savefig('static/img/sales_profit_1.png', format='png', dpi=200)
+    plt.savefig(prjRoot + '/static/img/sales_profit_1.png', format='png', dpi=200)
     img.seek(0)
    
     return send_file(img, mimetype='image/png')
@@ -179,7 +180,7 @@ def get_units_sold_image():
         
         #저장
         img = BytesIO()
-        plt.savefig('static/img/units_sold_'+str(i)+'.png', format='png', dpi=200)
+        plt.savefig(prjRoot + '/static/img/units_sold_'+str(i)+'.png', format='png', dpi=200)
         img.seek(0)
 
     return send_file(img, mimetype='image/png')
@@ -218,7 +219,7 @@ def get_profit_image():
 
     #저장
     img = BytesIO()
-    plt.savefig('static/img/profit_0.png', format='png', dpi=200)
+    plt.savefig(prjRoot + '/static/img/profit_0.png', format='png', dpi=200)
     img.seek(0)
 
     return send_file(img, mimetype='image/png')
