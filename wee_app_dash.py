@@ -69,7 +69,7 @@ app.layout = html.Div(
                                     id = 'toDt'
                                     , value = '2020'
                                     , style= {'width': '500px'}
-                                    , disabled = True
+                                    , disabled = True # 추후 기간별 검색 필요시 disabled 해제
 
                                 ),
 
@@ -106,14 +106,16 @@ app.layout = html.Div(
 
                 )
 
-@app.callback(Output('srh_Rst', 'children', allow_duplicate=True), 
+@app.callback(
+              Output('srh_Rst', 'children', allow_duplicate=True), 
               Input('srh_Btn', 'n_clicks'),
               State('rpt_Lst', 'value'), 
               State('cyl_Lst', 'value'), 
               State('fromDt', 'value'), 
               State('toDt', 'value'),
               State('frme_Lst', 'value'),
-              prevent_initial_call=True)
+              prevent_initial_call=True
+)
 def update_Lst (n_clicks, rpt_Lst_Value, cyl_Lst_Value, fromDt_Value, toDt_Value, frme_Value) :
 
     try : 
@@ -146,7 +148,8 @@ def update_Lst (n_clicks, rpt_Lst_Value, cyl_Lst_Value, fromDt_Value, toDt_Value
         print(str(e))
         return CONST_ERROR
 
-@app.callback(Output('srh_Rst', 'children'), 
+@app.callback(
+              Output('srh_Rst', 'children'), 
               Input('frme_Lst', 'value'),
               State('srh_Rst', 'children'),
               State('cyl_Lst', 'value'), 
@@ -156,16 +159,13 @@ def update_Lst (n_clicks, rpt_Lst_Value, cyl_Lst_Value, fromDt_Value, toDt_Value
 )
 def frme_Lst_on_Change (frme_Value, children, cyl_Lst_Value, fromDt_Value, toDt_Value) :
 
-    if children == CONST_NO_RESULT or children == CONST_ERROR : return
+    if children == CONST_NO_RESULT or children == CONST_ERROR : return []
 
     return draw_Select(frme_Value, fromDt_Value, toDt_Value, cyl_Lst_Value)
 
 def draw_DataTable () :
 
-    children = []
-    children.append(dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns]))
-
-    return children
+    return dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns])
 
 def draw_Graph (fromDt, toDt, cylVal) :
 
@@ -183,10 +183,7 @@ def draw_Graph (fromDt, toDt, cylVal) :
         title = '통계항목명'
     )
 
-    children = []
-    children.append(dcc.Graph(figure=fig))
-    
-    return children
+    return dcc.Graph(figure=fig)
 
 def draw_Select (frmeVal, fromDt, toDt, cylVal) :
 
