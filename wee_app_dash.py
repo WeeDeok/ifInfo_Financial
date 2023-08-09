@@ -7,9 +7,6 @@ CONST_NO_RESULT = "조회값이 없습니다."
 CONST_ERROR     = "조회 중 에러가 발생하였습니다."
 
 global gdf
-gdf = ""
-
-dfColumns = ['통계표코드', '통계명', '통계항목코드1', '통계항목명1', '통계항목코드2', '통계항목명2', '통계항목코드3', '통계항목명3', '통계항목코드4', '통계항목명4', '단위', '시점', '값']
 
 rptDropDownLst = ["722Y001 - 1.3.1. 한국은행 기준금리 및 여수신금리", 
                   "817Y002 - 1.3.2.1. 시장금리(일별)", 
@@ -79,6 +76,37 @@ app.layout = html.Div(
                                     ]
                                     , style = {}
                                 ),
+                                html.Div(
+                                    [
+                                        
+                                        dcc.Input(
+
+                                            id = 'itmCd1'
+                                            , style = {'width' : '150px'}
+
+                                        ),
+                                        dcc.Input(
+
+                                            id = 'itmCd2'
+                                            , style = {'width' : '150px'}
+
+                                        ),
+                                        dcc.Input(
+
+                                            id = 'itmCd3'
+                                            , style = {'width' : '150px'}
+
+                                        ),
+                                        dcc.Input(
+
+                                            id = 'itmCd4'
+                                            , style = {'width' : '150px'}
+
+                                        ),
+
+                                    ]
+                                    , style = {}
+                                )
 
                             ] 
                             , style = {"padding" : "10px"}       
@@ -121,14 +149,22 @@ app.layout = html.Div(
               State('fromDt', 'value'), 
               State('toDt', 'value'),
               State('frme_Lst', 'value'),
+              State('itmCd1', 'value'),
+              State('itmCd2', 'value'),
+              State('itmCd3', 'value'),
+              State('itmCd4', 'value'),
               prevent_initial_call=True
 )
-def update_Df (n_clicks, rptVal, cylVal, fromDt, toDt, frmeVal) :
+def update_Df (n_clicks, rptVal, cylVal, fromDt, toDt, frmeVal, itmCd1, itmCd2, itmCd3, itmCd4) :
 
     try : 
         global gdf
-        gdf = wp.getDf(str(rptVal.split("-")[0].rstrip()), str(cylVal.split("-")[0].rstrip()), fromDt, toDt, 1, 1000)
-        return draw_Select(gdf, frmeVal, fromDt, toDt, cylVal)
+        gdf = wp.getDf(str(rptVal.split("-")[0].rstrip()), str(cylVal.split("-")[0].rstrip()), fromDt, toDt, 1, 1000, itmCd1, itmCd2, itmCd3, itmCd4)
+        
+        if type(gdf) == str :
+            return gdf
+        else :
+            return draw_Select(gdf, frmeVal, fromDt, toDt, cylVal)
 
     except Exception as e :
         print(str(e))
