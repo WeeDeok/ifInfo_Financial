@@ -1,12 +1,13 @@
-from dash import Dash, html, dcc, Input, Output, State
+from dash import Dash, html, dcc, Input, Output, State, dash_table
 import plotly.express as px
-import plotly.subplots as make_subplots
+# import plotly.subplots as make_subplots
 import pandas as pd
 import plotly.graph_objs as go
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+app1 = Dash(__name__, external_stylesheets=external_stylesheets)
 
 df=pd.read_excel('sample.xlsx')
 
@@ -14,6 +15,7 @@ df1=df.query("Year == 2014") # df[df['Year']==2014]
 # Y축들 (Product - X축 제외하고 수치)
 df2=df1.loc[:, ['Gross Sales', 'Discounts',' Sales', 'COGS', 'Profit']] 
 
+app1.layout = dash_table.DataTable(df.to_dict('records'), [{"name" : i,"id" : i} for i in df.columns])
 
 app.layout = html.Div(
                     [
@@ -127,7 +129,6 @@ def update_graph_yaxis01(
 ):
     
     df2=df1.groupby('Product')[yaxis_column_name].sum().reset_index()
-    # print(df2[yaxis_column_name])
     fig = px.bar(df2, x=df2['Product'], y=df2[yaxis_column_name]
                  )
 
